@@ -69,7 +69,11 @@ module.exports = function processEachRecord(options) {
       if (attrDef.type === 'json' && _.has(record, columnName)) {
 
         // Special case: If it came back as the `null` literal, leave it alone
+        // Special case: Machinepack now uses Mysql2, which return objects if the underlaying column type is "JSON". In
+        //               that case we don't need to JSON.parse
         if (_.isNull(record[columnName])) {
+          return;
+        } else if (_.isObject(record[columnName])) {
           return;
         }
 
